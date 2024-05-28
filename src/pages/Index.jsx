@@ -1,4 +1,5 @@
-import { Box, Button, Container, Flex, Heading, HStack, Image, Link, Stack, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Heading, HStack, Image, Link, Stack, Text, VStack, Input, Textarea } from "@chakra-ui/react";
+import { useState } from "react";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 
 const recipes = [
@@ -20,6 +21,32 @@ const recipes = [
 ];
 
 const Index = () => {
+  const [recipeTitle, setRecipeTitle] = useState("");
+  const [ingredients, setIngredients] = useState("");
+  const [instructions, setInstructions] = useState("");
+  const [image, setImage] = useState(null);
+  const [submissionStatus, setSubmissionStatus] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add form validation logic here
+    if (recipeTitle && ingredients && instructions && image) {
+      // Simulate a successful submission
+      setSubmissionStatus("Recipe submitted successfully!");
+      // Clear the form
+      setRecipeTitle("");
+      setIngredients("");
+      setInstructions("");
+      setImage(null);
+    } else {
+      setSubmissionStatus("Please fill in all fields.");
+    }
+  };
+
+  const handleImageUpload = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   return (
     <Container maxW="container.xl" p={0}>
       {/* Navigation Bar */}
@@ -56,7 +83,42 @@ const Index = () => {
         </Flex>
       </Box>
 
-      {/* Footer */}
+      {/* Submit a Recipe Section */}
+      <Box as="section" id="submit" py={20} textAlign="center">
+        <Heading mb={4}>Submit a Recipe</Heading>
+        <form onSubmit={handleSubmit}>
+          <VStack spacing={4} align="stretch" maxW="md" mx="auto">
+            <Input
+              placeholder="Recipe Title"
+              value={recipeTitle}
+              onChange={(e) => setRecipeTitle(e.target.value)}
+              isRequired
+            />
+            <Textarea
+              placeholder="Ingredients"
+              value={ingredients}
+              onChange={(e) => setIngredients(e.target.value)}
+              isRequired
+            />
+            <Textarea
+              placeholder="Instructions"
+              value={instructions}
+              onChange={(e) => setInstructions(e.target.value)}
+              isRequired
+            />
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              isRequired
+            />
+            <Button type="submit" colorScheme="teal" size="lg">Submit</Button>
+            {submissionStatus && <Text color="green.500">{submissionStatus}</Text>}
+          </VStack>
+        </form>
+      </Box>
+
+      {/* Footer Section */}
       <Box as="footer" bg="brand.800" color="white" py={10} textAlign="center">
         <VStack spacing={4}>
           <Text>Contact us at: info@recipeshare.com</Text>
