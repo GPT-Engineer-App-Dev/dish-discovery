@@ -1,6 +1,6 @@
-import { Box, Button, Container, Flex, Heading, HStack, Image, Link, Stack, Text, VStack, Input, Textarea } from "@chakra-ui/react";
+import { Box, Button, Container, Flex, Heading, HStack, Image, Link, Stack, Text, VStack, Input, Textarea, IconButton } from "@chakra-ui/react";
 import { useState } from "react";
-import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+import { FaFacebook, FaTwitter, FaInstagram, FaStar } from "react-icons/fa";
 
 const recipes = [
   {
@@ -26,6 +26,7 @@ const Index = () => {
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
   const [submissionStatus, setSubmissionStatus] = useState("");
+  const [ratings, setRatings] = useState(recipes.map(() => 0));
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,6 +46,17 @@ const Index = () => {
 
   const handleImageUpload = (e) => {
     setImage(e.target.files[0]);
+  };
+
+  const handleRating = (index, rating) => {
+    const newRatings = [...ratings];
+    newRatings[index] = rating;
+    setRatings(newRatings);
+  };
+
+  const calculateAverageRating = (index) => {
+    const totalRatings = ratings.reduce((acc, rating) => acc + rating, 0);
+    return (totalRatings / ratings.length).toFixed(1);
   };
 
   return (
@@ -77,6 +89,19 @@ const Index = () => {
               <Box p={6}>
                 <Heading size="md" mb={2}>{recipe.title}</Heading>
                 <Text>{recipe.description}</Text>
+                <HStack spacing={1} mt={2}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <IconButton
+                      key={star}
+                      icon={<FaStar />}
+                      color={ratings[index] >= star ? "yellow.400" : "gray.300"}
+                      onClick={() => handleRating(index, star)}
+                      variant="ghost"
+                      size="sm"
+                    />
+                  ))}
+                </HStack>
+                <Text mt={2}>Average Rating: {calculateAverageRating(index)}</Text>
               </Box>
             </Box>
           ))}
